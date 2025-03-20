@@ -22,14 +22,36 @@ export const Home = () => {
   fetchTareas()
   }, []);
 
+  // Agregar nueva tarea
   const agregarTarea = async () => {
     
+    try {
+      const response = await fetch(`https://playground.4geeks.com/todo/todos/wins444`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "label": tareaInput,
+          is_done: false,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`Error HTTP! Estado: ${response.status}`);
+      }
+      const nuevaTarea = { id: Date.now(), title: tareaInput, done: false };
+      const nuevaLista = [...todos, nuevaTarea];
+      actualizarTareas(nuevaLista);
+      setTareaInput('');
+    } catch (error) {
+      console.error("Hubo un problema al eliminar la tarea:", error.message);
+    }
   }
 
   // Eliminar una tarea
   const eliminarTarea = async (idTarea) => {
     try {
-      const response = await fetch(`https://playground.4geeks.com/todo/users/wins444/${idTarea}`, {
+      const response = await fetch(`https://playground.4geeks.com/todo/todos/${idTarea}`, {
         method: "DELETE",
       });
       if (!response.ok) {
